@@ -1,0 +1,3 @@
+# Ignore the libraries we're using.
+jquery-2.1.1.js
+underscore.js
