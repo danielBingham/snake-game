@@ -101,13 +101,16 @@ var Snake = Snake || {
 		 */
 		tick: 0,
 
+
 		/**
 		 * Initialize the game.
 		 */
 		init: function() {
+
 			this.game_speed = Snake.config.game_speed;
 
-			Snake.world.init(Snake.config);
+			// Initialize the game world.
+			Snake.world = new Snake.World(Snake.config);
 			Snake.character.init(Snake.world);
 			Snake.view.init(Snake.config, Snake.world);
 
@@ -407,80 +410,6 @@ var Snake = Snake || {
 	},
 
 
-	/**
-	 * Any and all data describing the game world itself.
-	 */
-	world: {
-
-		/**
-		 * The width of the game world in squares.  
-		 *
-		 * @type	{int}
-		 */
-		width: 80,
-
-		/**
-		 * The height of the game world in squares.
-		 *
-		 * @type	{int}
-		 */
-		height: 80, 
-
-		/**
-		 * Array recording the position of all game
-		 * items.
-		 *
-		 * @type	{array}
-		 */
-		squares: [],
-
-		/**
-		 * Initialize the game world.
-		 *
-		 * @param	{object}	config - A configuration object. (Snake.config)
-		 */
-		init: function(config) {
-			this.width = config.world_width;
-			this.height = config.world_height;
-
-			for (var x = 0; x < this.width; x++) {
-				this.squares[x] = [];
-				for (var y = 0; y < this.height; y++) {
-					this.squares[x][y] = " ";
-				}
-			}
-
-			this.generateBlock();
-		
-		},
-
-		/**
-		 * Generate a random coordinate point a certain distance from
-		 * the edges of the world.
-		 *
-		 * @return	{object}	A point object with a randomly generated
-		 * coordinate.
-		 */
-		randomCoordinate: function() {
-			var x = Math.floor(Math.random() * (this.width-4) + 2);
-			var y = Math.floor(Math.random() * (this.height-4) + 2);	
-
-			return new Snake.point(x, y);
-		},
-
-		/**
-		 * Generate a new block and place it randomly on the world.
-		 */
-		generateBlock: function() {
-			var block = this.randomCoordinate();
-			while (this.squares[block.x][block.y] != " "
-				&& block.distance(Snake.character.head) < 5) {
-				block = this.randomCoordinate();
-			}
-
-			this.squares[block.x][block.y] = "B";
-		}
-	},
 
 	/**
 	 * A wrapper around the canvas and its context to implement any drawing
@@ -776,6 +705,75 @@ var Snake = Snake || {
 
 };
 
+// ------------------
+//		Snake.World
+// ------------------
+
+/**
+ *
+ * Initialize the game world.
+ *
+ * @param	{object}	config - A configuration object. (Snake.config)
+ */
+Snake.World = function(config) {
+	// The width of the game world in squares.  
+	this.width = 80;
+
+	// The height of the game world in squares.
+	this.height = 80; 
+
+	 // Array recording the position of all game items.
+	this.squares = [];
+
+	this.width = config.world_width;
+	this.height = config.world_height;
+
+	for (var x = 0; x < this.width; x++) {
+		this.squares[x] = [];
+		for (var y = 0; y < this.height; y++) {
+			this.squares[x][y] = " ";
+		}
+	}
+
+	this.generateBlock();
+};
+
+/**
+ * Any and all data describing the game world itself.
+ */
+Snake.World.prototype = {
+
+	/**
+	 * Generate a random coordinate point a certain distance from
+	 * the edges of the world.
+	 *
+	 * @return	{object}	A point object with a randomly generated
+	 * coordinate.
+	 */
+	randomCoordinate: function() {
+		var x = Math.floor(Math.random() * (this.width-4) + 2);
+		var y = Math.floor(Math.random() * (this.height-4) + 2);	
+
+		return new Snake.point(x, y);
+	},
+
+	/**
+	 * Generate a new block and place it randomly on the world.
+	 */
+	generateBlock: function() {
+		var block = this.randomCoordinate();
+		while (this.squares[block.x][block.y] != " "
+			&& block.distance(Snake.character.head) < 5) {
+			block = this.randomCoordinate();
+		}
+
+		this.squares[block.x][block.y] = "B";
+	}
+}
+
+//--------------------------
+// 		Snake.Point
+//-------------------------
 
 /**
  * Define a point class we can use for coordinates.
