@@ -172,9 +172,26 @@ var Snake = Snake || {
 		context: null,
 
 		/**
+		 * The width of our canvas in pixels.
+		 *
+		 * @type	{int}
+		 */
+		width: 0,
+
+		/**
+		 * The height of our canvas in pixels.
+		 *
+		 * @type	{int}
+		 */
+		height: 0,
+
+		/**
 		 * Initialize our drawing library with the canvas.
 		 */
-		init: function(canvas) {
+		init: function(canvas, width, height) {
+			this.width = width;
+			this.height = height;
+
 			this.canvas = canvas;
 			this.context = canvas.getContext("2d");	
 		},
@@ -187,8 +204,8 @@ var Snake = Snake || {
 		 * @param	{int}	width - The width of the rectangle in pixels.
 		 * @param	{int}	height - The height of the rectangle in pixels.
 		 */
-		rectangle: function(x,y,width,height) {
-			this.context.fillRect(x,y,width,height);
+		rectangle: function(x, y, width, height) {
+			this.context.fillRect(x, y, width, height);
 		},
 
 		/**
@@ -197,7 +214,7 @@ var Snake = Snake || {
 		 * @todo Decouple this from the view.
 		 */
 		clear: function() {
-			this.context.clearRect(0,0,Snake.view.width,Snake.view.height);
+			this.context.clearRect(0, 0, this.width, this.height);
 		}
 	},
 
