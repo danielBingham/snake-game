@@ -471,25 +471,75 @@ var Snake = Snake || {
 /**
  * Initialize the character in the game world. Creates the character,
  * initializes the vectors and places the character in to the world.
- *
- * @param	{object}	world - The world in to which we want to place
+ * @constructor
+ * @param	{Snake.World}	world - The world in to which we want to place
  * 		the character.
  */
 Snake.Character = function (world) {
+	/**
+	 * @constant
+	 * @type	{Snake.Point}
+	 */
 	this.UP = new Snake.Point(0, -1);
+
+	/**
+	 * @constant
+	 * @type	{Snake.Point}
+	 */
 	this.DOWN = new Snake.Point(0, 1);
+
+	/**
+	 * @constant
+	 * @type	{Snake.Point}
+	 */
 	this.LEFT = new Snake.Point(-1, 0);
+
+	/**
+	 * @constant
+	 * @type	{Snake.Point}
+	 */
 	this.RIGHT = new Snake.Point(1, 0);
 
+	/**
+	 * @property	{object}	head - A vector defining the position and
+	 * 		direction of the character's head.
+	 */
+	this.head = { position: null, direction: null };
+
+	/**
+	 * @property	{Snake.Point}	position - The position of the character's
+	 * 		head in the world map, in squares.
+	 */
+	this.head.position = new Snake.Point(1,3);
+
+	/**
+	 * @property	{Snake.Point}	direction - The direction vector of the character's head.
+	 */
+	this.head.direction = new Snake.Point(this.DOWN.x, this.DOWN.y);
+
+
+	/**
+	 * @property	{object}	tail - A vector defining hte position and
+	 * 		direction of the character's head. 
+	 */
+	this.tail = { position: null, direction: null };
+
+	/**
+	 * @property	{Snake.Point}	position - The character's current position
+	 * 		in the world map, in squares.
+	 */
+	this.tail.position = new Snake.Point(1,1);
+
+	/**
+	 * @property	{Snake.Point}	direction - The direction of the character's tail.
+	 */
+	this.tail.direction = new Snake.Point(this.DOWN.x, this.DOWN.y);
+
+
+	// Add the character to the world with an initial position and directions.
 	world.squares[1][1] = "S-down";
 	world.squares[1][2] = "S-down";
 	world.squares[1][3] = "S-down";
-
-	this.head.position = new Snake.Point(1,3);
-	this.head.direction = new Snake.Point(this.DOWN.x, this.DOWN.y);
-
-	this.tail.position = new Snake.Point(1,1);
-	this.tail.direction = new Snake.Point(this.DOWN.x, this.DOWN.y);
 };
 
 /**
@@ -498,56 +548,6 @@ Snake.Character = function (world) {
  * Prototype of the Character class.
  */
 Snake.Character.prototype = {
-
-	// Constants: Direction vectors for each possible
-	// direction of travel.
-	UP: null,
-	DOWN: null,
-	LEFT: null,
-	RIGHT: null,
-
-	/**
-	 * The character's head vector.
-	 *
-	 * @type	{object}
-	 */
-	head: {
-		/**
-		 * The position of the character's head.
-		 *
-		 * @type	{object}
-		 */
-		position: null,
-
-		/**
-		 * The direction vector of the character's head.
-		 *
-		 * @type	{object}
-		 */
-		direction: null 
-	},
-
-	/**
-	 * The character's tail vector.
-	 *
-	 * @type	{object}
-	 */
-	tail: {
-
-		/**
-		 * The position of the character's tail.
-		 *
-		 * @type	{object}
-		 */
-		position: null,
-
-		/**
-		 * The direction vector of the character's tail.
-		 *
-		 * @type	{object}
-		 */
-		direction: null 
-	}, 
 
 	/**
 	 * A generalized method to set the direction of one of the
@@ -732,21 +732,30 @@ Snake.Character.prototype = {
 /**
  *
  * Initialize the game world.
- *
- * @param	{object}	config - A configuration object. (Snake.config)
+ * @constructor
+ * @param	{Snake.config}	config - A configuration object. 
  */
 Snake.World = function(config) {
-	// The width of the game world in squares.  
-	this.width = 80;
 
-	// The height of the game world in squares.
-	this.height = 80; 
-
-	 // Array recording the position of all game items.
-	this.squares = [];
-
+	/**
+	 *  The width of the game world in squares.
+	 *
+	 *  @type	{number}
+	 */
 	this.width = config.world_width;
+
+	/**
+	 * The height of the game world in squares.
+	 *
+	 * @type	{number}
+	 */
 	this.height = config.world_height;
+
+	/**
+	 * @property	{array}  squares - An array recording the position of all
+	 * 		characters and items with in the game.
+	 */
+	this.squares = [];
 
 	for (var x = 0; x < this.width; x++) {
 		this.squares[x] = [];
@@ -762,6 +771,8 @@ Snake.World = function(config) {
  * Any and all data describing the game world itself.
  *
  * Prototype of the World class.
+ *
+ * @todo Decouple from Snake.character.
  */
 Snake.World.prototype = {
 
@@ -769,7 +780,7 @@ Snake.World.prototype = {
 	 * Generate a random coordinate point a certain distance from
 	 * the edges of the world.
 	 *
-	 * @return	{object}	A point object with a randomly generated
+	 * @return	{Snake.Point}	A point object with a randomly generated
 	 * coordinate.
 	 */
 	randomCoordinate: function() {
@@ -804,7 +815,15 @@ Snake.World.prototype = {
  * @param	{int}	y - The y coordinate.
  */
 Snake.Point = function(x,y) {
+
+	/**
+	 * @property	{number}	x - The x coordinate.
+	 */
 	this.x = x;
+
+	/**
+	 * @property	{number}	y - The y coordinate.
+	 */
 	this.y = y;
 };
 
