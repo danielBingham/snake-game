@@ -430,13 +430,19 @@ var Snake = Snake || {
 		/**
 		 * Initialize the game's animation and set the game to running.
 		 *
+		 * @todo	Decouple from Snake.game
+		 *
 		 * @param	{object}	config - A configuration object. (Snake.config)
 		 */
 		init: function(config) {
 			this.frame_rate = config.frame_rate;	
 
-			// Set up the game loop.
 			Snake.animate.last_frame = new Date().getTime();
+
+			// Set up the game loop.
+			// @todo Figure out how to pass Snake.game and Snake.animate in to
+			// the gameLoop's scope with out referencing through the global
+			// namespace.  Something weird is happening with scope here.
 			gameLoop = function() {
 				var animation_id = window.requestAnimationFrame(gameLoop);
 					
@@ -454,7 +460,7 @@ var Snake = Snake || {
 					$("#message").html("Game paused.");
 					window.cancelAnimationFrame(animation_id);
 				}
-			}
+			};
 
 			// Run the game loop.
 			gameLoop();
