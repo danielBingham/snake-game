@@ -114,7 +114,7 @@ var Snake = Snake || {
 			Snake.character = new Snake.Character(Snake.world);
 			Snake.view.init(Snake.config, Snake.world);
 
-			Snake.draw.init($("#snake")[0]);
+			Snake.draw.init($("#snake")[0], Snake.view.width, Snake.view.height);
 			Snake.command.init();
 			$("#snake").focus();
 			Snake.animate.init(Snake.config);
