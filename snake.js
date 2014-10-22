@@ -114,7 +114,7 @@ var Snake = Snake || {
 			Snake.character = new Snake.Character(Snake.world);
 			Snake.view.init(Snake.config, Snake.world);
 
-			Snake.draw.init($("#snake")[0], Snake.view.width, Snake.view.height);
+			Snake.draw = new Snake.Draw($("#snake")[0], Snake.view.width, Snake.view.height);
 			Snake.command.init();
 			$("#snake").focus();
 			Snake.animate.init(Snake.config);
@@ -150,72 +150,6 @@ var Snake = Snake || {
 			}
 		},
 
-	},
-
-	/**
-	 * A wrapper around the canvas and its context to implement any drawing
-	 * methods we need.
-	 */
-	draw: {
-		/**
-		 * The canvas element on which we are drawing.
-		 *
-		 * @type	{object}
-		 */
-		canvas: null, 
-
-		/**
-		 * The 2d context of the canvas element on which we are drawing.
-		 *
-		 * @type	{object}
-		 */
-		context: null,
-
-		/**
-		 * The width of our canvas in pixels.
-		 *
-		 * @type	{int}
-		 */
-		width: 0,
-
-		/**
-		 * The height of our canvas in pixels.
-		 *
-		 * @type	{int}
-		 */
-		height: 0,
-
-		/**
-		 * Initialize our drawing library with the canvas.
-		 */
-		init: function(canvas, width, height) {
-			this.width = width;
-			this.height = height;
-
-			this.canvas = canvas;
-			this.context = canvas.getContext("2d");	
-		},
-
-		/**
-		 * Draw a rectangle.
-		 *
-		 * @param	{int}	x - X coordinate on the canvas pixel coordinate plane.
-		 * @param	{int}	y - Y coordinate on the canvas pixel coordinate plane.
-		 * @param	{int}	width - The width of the rectangle in pixels.
-		 * @param	{int}	height - The height of the rectangle in pixels.
-		 */
-		rectangle: function(x, y, width, height) {
-			this.context.fillRect(x, y, width, height);
-		},
-
-		/**
-		 * Clear the canvas.
-		 *
-		 * @todo Decouple this from the view.
-		 */
-		clear: function() {
-			this.context.clearRect(0, 0, this.width, this.height);
-		}
 	},
 
 	/**
@@ -469,6 +403,73 @@ var Snake = Snake || {
 
 };
 
+// ----------------------------------------------------------------------------
+// 		Snake.Character
+// ----------------------------------------------------------------------------
+
+/**
+ * Construct our canvas wrapper object.
+ *
+ * @constructor
+ * @param	{object}	canvas - The HTML5 canvas element that we'll be drawing on.
+ * 		Needs to be the native DOM element, not a JQuery wrapper.
+ * @param	{int}	width - The width of our canvas in pixels.
+ * @param	{int}	height - The height of our canvas in pixels.	
+ */
+Snake.Draw = function(canvas, width, height) {
+
+	/**
+	 * @property	{int}	width - The width of our canvas in pixels.
+	 */
+	this.width = width;
+
+	/**
+	 * @property	{int}	height - The height of our canvas in pixels.
+	 */
+	this.height = height;
+
+	/**
+	 * @property	{object}	canvas - The canvas element on which we are drawing.
+	 */
+	this.canvas = canvas;
+
+	/**
+	 * The 2d context of the canvas element on which we are drawing.
+	 *
+	 * @type	{object}
+	 */
+	this.context = canvas.getContext("2d");	
+};
+
+/**
+ * A wrapper around the canvas and its context to implement any drawing
+ * methods we need.
+ *
+ * Prototype of the Draw class.
+ */
+Snake.Draw.prototype = {
+
+	/**
+	 * Draw a rectangle.
+	 *
+	 * @param	{int}	x - X coordinate on the canvas pixel coordinate plane.
+	 * @param	{int}	y - Y coordinate on the canvas pixel coordinate plane.
+	 * @param	{int}	width - The width of the rectangle in pixels.
+	 * @param	{int}	height - The height of the rectangle in pixels.
+	 */
+	rectangle: function(x, y, width, height) {
+		this.context.fillRect(x, y, width, height);
+	},
+
+	/**
+	 * Clear the canvas.
+	 *
+	 * @todo Decouple this from the view.
+	 */
+	clear: function() {
+		this.context.clearRect(0, 0, this.width, this.height);
+	}
+};
 
 // ----------------------------------------------------------------------------
 // 		Snake.Character
