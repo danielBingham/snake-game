@@ -112,7 +112,7 @@ var Snake = Snake || {
 			// Initialize the game world.
 			Snake.world = new Snake.World(Snake.config);
 			Snake.character = new Snake.Character(Snake.world);
-			Snake.view.init(Snake.config, Snake.world);
+			Snake.view = new Snake.View(Snake.config, Snake.world);
 
 			Snake.draw = new Snake.Draw($("#snake")[0], Snake.view.width, Snake.view.height);
 			Snake.command.init();
@@ -256,93 +256,7 @@ var Snake = Snake || {
 
 	},
 
-	/**
-	 * The view port through which we are viewing the game world.
-	 */
-	view: { 
-
 		/**
-		 * Width of the game world, in pixels.
-		 * @type	{int}
-		 */
-		width: 0,
-
-		/**
-		 * Height of the game world, pixels.
-		 * @type	{int}
-		 */
-		height: 0,
-
-		/**
-		 * Size of a single game square, in pixels.
-		 * @type	{int}
-		 */
-		square_size: 1,	
-
-		/**
-		 * Initialize the view.
-		 *
-		 * @param	{object}	config - A configuration object (Snake.config).
-		 * @param	{object}	world  - An object representing the world state.
-		 */
-		init: function(config, world) {
-			this.square_size = config.square_size;
-
-			this.width = world.width * this.square_size;
-			this.height = world.height * this.square_size; 
-
-			$("#snake").attr("width", this.width);
-			$("#snake").attr("height", this.height);
-
-			$("#game-wrapper").css("width", this.width + 10);
-			$("#game-wrapper").css("height", this.height + 10);
-		},
-
-		/**
-		 * Update the score in the view.
-		 *
-		 * @param	{int}	score - The score in integer form.
-		 */
-		updateScore: function(score) {
-			$("#score").html(score);
-		},
-
-		/**
-		 * Render the view of the world.
-		 *
-		 * @param	{object} 	world - An object representing world state. (Snake.world)
-		 * 
-		 * @todo Decouple and inject Snake.draw.
-		 */
-		render: function(world) {
-			// Clear the view.
-			Snake.draw.clear();
-
-			// Redraw the world.
-			for (var x = 0; x < world.width; x++) {
-				for (var y = 0; y < world.height; y++) {
-
-					// The square is occupied by the Snake. 
-					if (world.squares[x][y][0] == "S") {
-						Snake.draw.rectangle(
-							x * this.square_size,
-							y * this.square_size,
-							this.square_size,
-							this.square_size);	
-					} else if (world.squares[x][y] == "B") {
-						Snake.draw.rectangle(
-							x * this.square_size,
-							y * this.square_size,
-							this.square_size,
-							this.square_size);	
-					}
-
-				}
-			}
-		}
-	},
-
-	/**
 	 * Handle animating the world.
 	 */
 	animate: {
@@ -401,6 +315,99 @@ var Snake = Snake || {
 		}
 	}
 
+};
+
+// ----------------------------------------------------------------------------
+// 		Snake.View
+// ----------------------------------------------------------------------------
+
+/**
+ * The view port through which we are viewing the game world.
+ *
+ * Initialize the view.
+ * 
+ * @constructor
+ *
+ * @param	{object}	config - A configuration object (Snake.config).
+ * @param	{object}	world  - An object representing the world state.
+ */
+Snake.View =  function(config, world) {
+
+	/**
+	 * Size of a single game square, in pixels.
+	 * @type	{int}
+	 */
+	this.square_size = config.square_size;
+
+	/**
+	 * Width of the game world, in pixels.
+	 * @type	{int}
+	 */
+	this.width = world.width * this.square_size;
+
+	/**
+	 * Height of the game world, pixels.
+	 * @type	{int}
+	 */
+	this.height = world.height * this.square_size; 
+
+	$("#snake").attr("width", this.width);
+	$("#snake").attr("height", this.height);
+
+	$("#game-wrapper").css("width", this.width + 10);
+	$("#game-wrapper").css("height", this.height + 10);
+},
+
+
+/**
+ * The view port through which we are viewing the game world.
+ *
+ * The prototype of the view class.
+ */
+Snake.View.prototype = { 
+
+	/**
+	 * Update the score in the view.
+	 *
+	 * @param	{int}	score - The score in integer form.
+	 */
+	updateScore: function(score) {
+		$("#score").html(score);
+	},
+
+	/**
+	 * Render the view of the world.
+	 *
+	 * @param	{object} 	world - An object representing world state. (Snake.world)
+	 * 
+	 * @todo Decouple and inject Snake.draw.
+	 */
+	render: function(world) {
+		// Clear the view.
+		Snake.draw.clear();
+
+		// Redraw the world.
+		for (var x = 0; x < world.width; x++) {
+			for (var y = 0; y < world.height; y++) {
+
+				// The square is occupied by the Snake. 
+				if (world.squares[x][y][0] == "S") {
+					Snake.draw.rectangle(
+						x * this.square_size,
+						y * this.square_size,
+						this.square_size,
+						this.square_size);	
+				} else if (world.squares[x][y] == "B") {
+					Snake.draw.rectangle(
+						x * this.square_size,
+						y * this.square_size,
+						this.square_size,
+						this.square_size);	
+				}
+
+			}
+		}
+	}
 };
 
 // ----------------------------------------------------------------------------
