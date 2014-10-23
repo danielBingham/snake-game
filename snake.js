@@ -118,7 +118,7 @@ var Snake = Snake || {
 			Snake.command = new Snake.Command();
 			$("#snake").focus();
 
-			Snake.animate = new Snake.Animate(Snake.config);
+			Snake.animate = new Snake.Animator(Snake.config);
 			Snake.animate.start();
 		},
 
@@ -291,7 +291,7 @@ Snake.Command.prototype = {
 };
 
 // ----------------------------------------------------------------------------
-// 		Snake.Animate
+// 		Snake.Animator
 // ----------------------------------------------------------------------------
 
 /**
@@ -301,7 +301,7 @@ Snake.Command.prototype = {
  * 
  * @param	{object}	config - A configuration object. (Snake.config)
  */
-Snake.Animate = function(config) {
+Snake.Animator = function(config) {
 	/**
 	 * @property	{int}	frame_rate - A configuration property setting the
 	 * 		framerate at which we wish to run the game.
@@ -321,7 +321,7 @@ Snake.Animate = function(config) {
  *
  * Prototype of the animation class.
  */
-Snake.Animate.prototype = {
+Snake.Animator.prototype = {
 
 	/**
 	 * Initialize the game's animation and set the game to running.
@@ -336,19 +336,29 @@ Snake.Animate.prototype = {
 	 */
 	start: function() {
 		// Set up the game loop.
-		gameLoop = function() {
-			var animation_id = window.requestAnimationFrame(gameLoop);
-				
-			var now = new Date().getTime();	
+		var gameLoop = function(animator) {
 
-			if (now - Snake.animate.last_frame > 1000/Snake.animate.frame_rate) {
-				Snake.animate.last_frame = now;
+			// To detach gameLoop from the global scope, we need to use
+			// an anonymous function that inherits gameLoop's scope.  That
+			// way it can pass the animate object it receives back to itself
+			// when requestAnimationFrame() calls it to recurse.
+			var animation_id = window.requestAnimationFrame(function() {
+				gameLoop(animator);	
+			});
+		
+			// Is it time to show a new frame?		
+			var now = new Date().getTime();	
+			if (now - animator.last_frame > 1000/animator.frame_rate) {
+				animator.last_frame = now;
 				Snake.game.update();
 			}
 
+			// Have we reached the end of the game?
 			if (Snake.game.game_over) {
 				$("#message").html("Game over!");
 				window.cancelAnimationFrame(animation_id);
+
+			// ...or are we paused and awaiting a space?
 			} else if (Snake.game.paused) {
 				$("#message").html("Game paused.");
 				window.cancelAnimationFrame(animation_id);
@@ -356,7 +366,7 @@ Snake.Animate.prototype = {
 		};
 
 		// Run the game loop.
-		gameLoop();
+		gameLoop(this);
 	}
 
 };
