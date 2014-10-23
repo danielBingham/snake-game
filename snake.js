@@ -115,7 +115,7 @@ var Snake = Snake || {
 			Snake.view = new Snake.View(Snake.config, Snake.world);
 
 			Snake.draw = new Snake.Draw($("#snake")[0], Snake.view.width, Snake.view.height);
-			Snake.command.init();
+			Snake.command = new Snake.Command();
 			$("#snake").focus();
 
 			Snake.animate = new Snake.Animate(Snake.config);
@@ -154,110 +154,139 @@ var Snake = Snake || {
 
 	},
 
+};
+
+// ----------------------------------------------------------------------------
+// 		Snake.Command
+// ----------------------------------------------------------------------------
+
+/**
+ * Initialize the command interpreter by registering any
+ * listeners we need.
+ *
+ * @constructor
+ */
+Snake.Command = function() {
+		
 	/**
-	 * A basic command interpreter.
+	 * @property	{string} 	previous_direction - Snake head's direction at
+	 * 		the time of the previous frame's rendering.
+	 *
+	 * Fixes a bug where the player hitting two directions in the space
+	 * of a single game update could result in the snake turning back
+	 * on itself and the game ending.
 	 */
-	command: {
-		// Constants: values of certain keyboard characters.
-		KEY_LEFT: 37,
-		KEY_RIGHT: 39,
-		KEY_UP: 38,
-		KEY_DOWN: 40,
-		KEY_SPACE: 32,
+	this.previous_direction = "";
 
-		/**
-		 * Snake head's direction at the time of the previous frame's rendering.
-		 *
-		 * Fixes a bug where the player hitting two directions in the space
-		 * of a single game update could result in the snake turning back
-		 * on itself and the game ending.
-		 *
-		 * @type	{string}
-		 */
-		previous_direction: "",
+	// Register the keyboard listener for arrow key control.
+	$(document).keydown(this.listen);
 
-		/**
-		 * Initialize the command interpreter by registering any
-		 * listeners we need.
-		 */
-		init: function() {
-			// Register the keyboard listener for arrow key control.
-			$(document).keydown(this.listen);
+	// Register a click listener to start a new game if the 
+	// last one ended.
+	$("#snake").click(function(event) {
+		if (Snake.game.game_over) {
+			Snake.game.reinit();
+		}
+	});
+};
 
-			// Register a click listener to start a new game if the 
-			// last one ended.
-			$("#snake").click(function(event) {
-				if (Snake.game.game_over) {
-					Snake.game.reinit();
-				}
-			});
-		},
+/**
+ * @constant
+ * @type	{int}
+ */
+Snake.Command.KEY_LEFT = 37;
 
-		/**
-		 * Listen to keydown events and handle them accordingly.
-		 *
-		 * @fixme There's something weird going on with scope here.  Don't have
-		 * time to figure it out right now, so just use global scope
-		 * references.  I suspect _.bind() could help with that scoping
-		 * issue...
-		 *
-		 * @param	{object}	event - A jquery event object.
-		 */
-		listen: function(event) {
-			if (event.which == Snake.command.KEY_SPACE) {
-				event.preventDefault();
-				if ( ! Snake.game.paused) {
-					Snake.game.paused = true;
-				} else {
-					Snake.game.paused = false;
-					Snake.animate.init(Snake.config);
-					$("#message").html(" ");
-				}
-				return;
+/**
+ * @constant
+ * @type	{int}
+ */
+Snake.Command.KEY_RIGHT = 39;
+
+/**
+ * @constant
+ * @type	{int}
+ */
+Snake.Command.KEY_UP = 38;
+
+/**
+ * @constant
+ * @type	{int}
+ */
+Snake.Command.KEY_DOWN = 40;
+
+/**
+ * @constant
+ * @type	{int}
+ */
+Snake.Command.KEY_SPACE = 32;
+
+/**
+ * A basic command interpreter.
+ */
+Snake.Command.prototype = {
+
+	/**
+	 * Listen to keydown events and handle them accordingly.
+	 *
+	 * @fixme There's something weird going on with scope here.  Don't have
+	 * time to figure it out right now, so just use global scope
+	 * references.  I suspect _.bind() could help with that scoping
+	 * issue...
+	 *
+	 * @param	{object}	event - A jquery event object.
+	 */
+	listen: function(event) {
+		if (event.which == Snake.Command.KEY_SPACE) {
+			event.preventDefault();
+			if ( ! Snake.game.paused) {
+				Snake.game.paused = true;
+			} else {
+				Snake.game.paused = false;
+				Snake.animate.init(Snake.config);
+				$("#message").html(" ");
 			}
-
-			// Turn left.
-			if (event.which == Snake.command.KEY_LEFT) {
-				// Can't go in the opposite direction, so just ignore it.
-				if (Snake.command.previous_direction == "right") {
-					return;
-				}
-				Snake.character.setHeadDirection("left");
-				event.preventDefault();
-
-
-			// Turn right.
-			} else if (event.which == Snake.command.KEY_RIGHT) {
-				// Can't go in the opposite direction, so just ignore it.
-				if (Snake.command.previous_direction == "left") {
-					return;
-				}
-				Snake.character.setHeadDirection("right");
-				event.preventDefault();
-
-			// Turn up.
-			} else if (event.which == Snake.command.KEY_UP) {
-				// Can't go in the opposite direction, so just ignore it.
-				if (Snake.command.previous_direction == "down") {
-					return;
-				}
-				Snake.character.setHeadDirection("up");
-				event.preventDefault();
-
-			// Turn down.
-			} else if (event.which == Snake.command.KEY_DOWN) {
-				// Can't go in the opposite direction, so just ignore it.
-				if (Snake.command.previous_direction == "up") {
-					return;
-				}
-				Snake.character.setHeadDirection("down");
-				event.preventDefault();
-			}
-
+			return;
 		}
 
-	},
+		// Turn left.
+		if (event.which == Snake.Command.KEY_LEFT) {
+			// Can't go in the opposite direction, so just ignore it.
+			if (Snake.command.previous_direction == "right") {
+				return;
+			}
+			Snake.character.setHeadDirection("left");
+			event.preventDefault();
 
+
+		// Turn right.
+		} else if (event.which == Snake.Command.KEY_RIGHT) {
+			// Can't go in the opposite direction, so just ignore it.
+			if (Snake.command.previous_direction == "left") {
+				return;
+			}
+			Snake.character.setHeadDirection("right");
+			event.preventDefault();
+
+		// Turn up.
+		} else if (event.which == Snake.Command.KEY_UP) {
+			// Can't go in the opposite direction, so just ignore it.
+			if (Snake.command.previous_direction == "down") {
+				return;
+			}
+			Snake.character.setHeadDirection("up");
+			event.preventDefault();
+
+		// Turn down.
+		} else if (event.which == Snake.Command.KEY_DOWN) {
+			// Can't go in the opposite direction, so just ignore it.
+			if (Snake.command.previous_direction == "up") {
+				return;
+			}
+			Snake.character.setHeadDirection("down");
+			event.preventDefault();
+		}
+
+	}
 
 };
 
