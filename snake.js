@@ -296,19 +296,21 @@ Snake.Command.prototype = {
 
 /**
  * Handle animating the world.
+ *
+ * @constructor
+ * 
+ * @param	{object}	config - A configuration object. (Snake.config)
  */
 Snake.Animate = function(config) {
 	/**
-	 * A configuration property setting the framerate
-	 * at which we wish to run the game.
-	 * @type	{int}
+	 * @property	{int}	frame_rate - A configuration property setting the
+	 * 		framerate at which we wish to run the game.
 	 */
 	this.frame_rate = config.frame_rate;	
 
 	/**
-	 * A unix timestamp recording the time at which
-	 * the previous frame was rendered.
-	 * @type	{int}
+	 * @property	{int}	last_frame - A unix timestamp recording the time at
+	 * 		which the previous frame was rendered.
 	 */
 	this.last_frame = new Date().getTime();
 
@@ -316,6 +318,8 @@ Snake.Animate = function(config) {
 
 /**
  * Handle animating the world.
+ *
+ * Prototype of the animation class.
  */
 Snake.Animate.prototype = {
 
@@ -374,22 +378,21 @@ Snake.Animate.prototype = {
 Snake.View =  function(config, world) {
 
 	/**
-	 * Size of a single game square, in pixels.
-	 * @type	{int}
+	 * @property 	{int}	square_size - Size of a single game square, in pixels.
 	 */
 	this.square_size = config.square_size;
 
 	/**
-	 * Width of the game world, in pixels.
-	 * @type	{int}
+	 * @property	{int}	width - Width of the game world, in pixels.
 	 */
 	this.width = world.width * this.square_size;
 
 	/**
-	 * Height of the game world, pixels.
-	 * @type	{int}
+	 * @property	{int}	height -  Height of the game world, pixels.
 	 */
 	this.height = world.height * this.square_size; 
+
+
 
 	$("#snake").attr("width", this.width);
 	$("#snake").attr("height", this.height);
