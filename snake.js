@@ -117,7 +117,9 @@ var Snake = Snake || {
 			Snake.draw = new Snake.Draw($("#snake")[0], Snake.view.width, Snake.view.height);
 			Snake.command.init();
 			$("#snake").focus();
-			Snake.animate.init(Snake.config);
+
+			Snake.animate = new Snake.Animate(Snake.config);
+			Snake.animate.start();
 		},
 
 		/**
@@ -256,63 +258,72 @@ var Snake = Snake || {
 
 	},
 
-		/**
-	 * Handle animating the world.
+
+};
+
+// ----------------------------------------------------------------------------
+// 		Snake.Animate
+// ----------------------------------------------------------------------------
+
+/**
+ * Handle animating the world.
+ */
+Snake.Animate = function(config) {
+	/**
+	 * A configuration property setting the framerate
+	 * at which we wish to run the game.
+	 * @type	{int}
 	 */
-	animate: {
+	this.frame_rate = config.frame_rate;	
 
-		/**
-		 * A unix timestamp recording the time at which
-		 * the previous frame was rendered.
-		 * @type	{int}
-		 */
-		last_frame: 0,
+	/**
+	 * A unix timestamp recording the time at which
+	 * the previous frame was rendered.
+	 * @type	{int}
+	 */
+	this.last_frame = new Date().getTime();
 
-		/**
-		 * A configuration property setting the framerate
-		 * at which we wish to run the game.
-		 * @type	{int}
-		 */
-		frame_rate: 60,
+};
 
-		/**
-		 * Initialize the game's animation and set the game to running.
-		 *
-		 * @todo	Decouple from Snake.game
-		 *
-		 * @param	{object}	config - A configuration object. (Snake.config)
-		 */
-		init: function(config) {
-			this.frame_rate = config.frame_rate;	
+/**
+ * Handle animating the world.
+ */
+Snake.Animate.prototype = {
 
-			Snake.animate.last_frame = new Date().getTime();
+	/**
+	 * Initialize the game's animation and set the game to running.
+	 *
+	 * @todo Figure out how to pass Snake.game and Snake.animate in to the
+	 * gameLoop's scope with out referencing through the global namespace.
+	 * Something weird is happening with scope here.
+	 *
+	 * @todo	Decouple from Snake.game
+	 *
+	 * @param	{object}	config - A configuration object. (Snake.config)
+	 */
+	start: function() {
+		// Set up the game loop.
+		gameLoop = function() {
+			var animation_id = window.requestAnimationFrame(gameLoop);
+				
+			var now = new Date().getTime();	
 
-			// Set up the game loop.
-			// @todo Figure out how to pass Snake.game and Snake.animate in to
-			// the gameLoop's scope with out referencing through the global
-			// namespace.  Something weird is happening with scope here.
-			gameLoop = function() {
-				var animation_id = window.requestAnimationFrame(gameLoop);
-					
-				var now = new Date().getTime();	
+			if (now - Snake.animate.last_frame > 1000/Snake.animate.frame_rate) {
+				Snake.animate.last_frame = now;
+				Snake.game.update();
+			}
 
-				if (now - Snake.animate.last_frame > 1000/Snake.animate.frame_rate) {
-					Snake.animate.last_frame = now;
-					Snake.game.update();
-				}
+			if (Snake.game.game_over) {
+				$("#message").html("Game over!");
+				window.cancelAnimationFrame(animation_id);
+			} else if (Snake.game.paused) {
+				$("#message").html("Game paused.");
+				window.cancelAnimationFrame(animation_id);
+			}
+		};
 
-				if (Snake.game.game_over) {
-					$("#message").html("Game over!");
-					window.cancelAnimationFrame(animation_id);
-				} else if (Snake.game.paused) {
-					$("#message").html("Game paused.");
-					window.cancelAnimationFrame(animation_id);
-				}
-			};
-
-			// Run the game loop.
-			gameLoop();
-		}
+		// Run the game loop.
+		gameLoop();
 	}
 
 };
