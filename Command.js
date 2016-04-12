@@ -20,7 +20,7 @@ function(
  *
  * @constructor
  */
-Command = function(game) {
+var Command = function(game) {
 
 	/**
 	 * @property	{Game}	game	- The object representing the game's data.
