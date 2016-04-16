@@ -1,11 +1,13 @@
 requirejs(
 [
 	"underscore",
-	"jquery"
+	"jquery",
+	"Game"
 ], 
 function(
 	_,
-	$
+	$,
+	Game
 ) {
 
 /**
@@ -13,8 +15,9 @@ function(
  */
 $(document).ready(function() {
 
+	var game = new Game();
 	// When we're ready, off we go.
-	Snake.game.init();
+	game.init();
 });
 
 });
