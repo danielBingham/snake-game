@@ -1,11 +1,27 @@
 define(
 [
 	"underscore",
-	"jquery"
+	"jquery",
+	"Animator",
+	"Character",
+	"Command",
+	"Draw",
+	"Game",
+	"Point",
+	"View",
+	"World"
 ], 
 function(
 	_,
-	$
+	$,
+	Animator,
+	Character,
+	Command,
+	Draw,
+	Game,
+	Point,
+	View,
+	World
 ) {	
 
 var Game = function() {
@@ -48,6 +64,41 @@ var Game = function() {
 	 * @type	{int}
 	 */
 	this.tick = 0;
+
+	/**
+	 *
+	 */
+	this.animator = null;
+
+	/**
+	 *
+	 */
+	this.character = null;
+
+	/**
+	 *
+	 */
+	this.command = null;
+
+	/**
+	 *
+	 */
+	this.draw = null;
+	
+	/**
+	 *
+	 */
+	this.point = null;
+
+	/**
+	 *
+	 */
+	this.view = null;
+
+	/**
+	 *
+	 */
+	this.world = null;
 };
 
 Game.prototype = {
@@ -57,19 +108,19 @@ Game.prototype = {
 	 */
 	init: function() {
 
-		this.game_speed = Snake.config.game_speed;
+		this.game_speed = this.config.game_speed;
 
 		// Initialize the game world.
-		Snake.world = new Snake.World(Snake.config);
-		Snake.character = new Snake.Character(Snake.world);
-		Snake.view = new Snake.View(Snake.config, Snake.world);
+		this.world = new World(this.config);
+		this.character = new Character(this.world);
+		this.view = new View(this.config, this.world);
 
-		Snake.draw = new Snake.Draw($("#snake")[0], Snake.view.width, Snake.view.height);
-		Snake.command = new Snake.Command();
+		this.draw = new Draw($("#snake")[0], this.view.width, this.view.height);
+		this.command = new Command();
 		$("#snake").focus();
 
-		Snake.animate = new Snake.Animator(Snake.config);
-		Snake.animate.start();
+		this.animator = new Animator(this.config);
+		this.animator.start();
 	},
 
 	/**
@@ -88,15 +139,15 @@ Game.prototype = {
 	update: function() {
 		this.tick++;
 		if (this.tick == this.game_speed) {
-			var ate_block = Snake.character.move(Snake.world, Snake.game);		
+			var ate_block = this.character.move(this.world, this.game);		
 			if (ate_block) {
-				Snake.world.generateBlock();
+				this.world.generateBlock();
 				this.score++;
 			}
 		
-			Snake.command.previous_direction = Snake.character.getHeadDirection();	
-			Snake.view.render(Snake.world);
-			Snake.view.updateScore(this.score);
+			this.command.previous_direction = this.character.getHeadDirection();	
+			this.view.render(this.world);
+			this.view.updateScore(this.score);
 			
 			this.tick = 0;
 		}
