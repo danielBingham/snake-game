@@ -1,10 +1,20 @@
 requirejs(
 [
-	"underscore"
+	"underscore",
+	"jquery"
 ], 
 function(
-	_
+	_,
+	$
 ) {
 
+/**
+ * Initialize the game.
+ */
+$(document).ready(function() {
+
+	// When we're ready, off we go.
+	Snake.game.init();
+});
 
 });
