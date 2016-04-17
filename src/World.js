@@ -74,10 +74,10 @@ World.prototype = {
 	/**
 	 * Generate a new block and place it randomly on the world.
 	 */
-	generateBlock: function() {
+	generateBlock: function(character) {
 		var block = this.randomCoordinate();
 		while (this.squares[block.x][block.y] != " "
-			&& block.distance(Snake.character.head) < 5) {
+			&& block.distance(character.head) < 5) {
 			block = this.randomCoordinate();
 		}
 

@@ -24,7 +24,7 @@ function(
 	World
 ) {	
 
-var Game = function() {
+var Game = function(config) {
 
 	/**
 	 * The number of blocks the player has consumed.
@@ -66,37 +66,49 @@ var Game = function() {
 	this.tick = 0;
 
 	/**
+	 * An object containing configuration parameters for the game.
+	 */
+	this.config = config;
+
+	/**
+	 * Handles animating the world.
 	 *
+	 * @type	{Animator}
 	 */
 	this.animator = null;
 
 	/**
+	 * The snake character.
 	 *
+	 * @type	{Character}
 	 */
 	this.character = null;
 
 	/**
+	 * The command interpreter.
 	 *
+	 * @type	{Command}
 	 */
 	this.command = null;
 
 	/**
+	 * An object for drawing on the canvas.
 	 *
+	 * @type	{Draw}
 	 */
 	this.draw = null;
-	
-	/**
-	 *
-	 */
-	this.point = null;
 
 	/**
+	 * The view object.
 	 *
+	 * @type	{View}
 	 */
 	this.view = null;
 
 	/**
+	 * The world wrapper.
 	 *
+	 * @type	{world}
 	 */
 	this.world = null;
 };
@@ -141,7 +153,7 @@ Game.prototype = {
 		if (this.tick == this.game_speed) {
 			var ate_block = this.character.move(this.world, this.game);		
 			if (ate_block) {
-				this.world.generateBlock();
+				this.world.generateBlock(this.character);
 				this.score++;
 			}
 		
