@@ -185,9 +185,9 @@ Snake.Character.prototype = {
 	/**
 	 *  A method to update the character's location in the game world.
 	 *
-	 *  @param	{object}	world - The game world in which the character
+	 *  @param	{World}	world - The game world in which the character
 	 *  		resides.
-	 *  @param	{object}	game - The game in which the character is
+	 *  @param	{Game}	game - The game in which the character is
 	 *  		playing.
 	 */
 	move: function(world, game) {
@@ -207,9 +207,9 @@ Snake.Character.prototype = {
 	/**
 	 * Move the snake's head.
 	 *
-	 * @param	{object}	world - The game world in which we are moving
+	 * @param	{World}	world - The game world in which we are moving
 	 * 		this character's head.
-	 * @param	{object}	game - The game in which this character exists.
+	 * @param	{Game}	game - The game in which this character exists.
 	 */
 	moveHead: function(world, game) {
 		var ate_block = false;

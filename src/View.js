@@ -16,7 +16,7 @@ function(
  * @constructor
  *
  * @param	{Config}	config - A configuration object.
- * @param	{world}		world  - An object representing the world state.
+ * @param	{World}		world  - An object representing the world state.
  */
 var View = function(config, world) {
 

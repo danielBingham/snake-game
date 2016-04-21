@@ -18,6 +18,9 @@ function(
  * Initialize the command interpreter by registering any
  * listeners we need.
  *
+ * @param	{Game}	game	The object representing the game's data. Also
+ * 		serves as a dependency wrapper.  This is the currently active game.
+ *
  * @constructor
  */
 var Command = function(game) {
