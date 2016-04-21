@@ -12,6 +12,21 @@
  * 	StudlyCase - For classes and top-level namespaces.
  *
  */
+
+require.config({
+	baseUrl: 'src',
+	paths: {
+		jquery: 'lib/jquery',
+		underscore: 'lib/underscore'
+	},
+	shim: {
+		'underscore': {
+			exports: '_'
+		}
+	}
+});
+
+
 requirejs(
 [
 	"underscore",

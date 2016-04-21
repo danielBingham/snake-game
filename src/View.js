@@ -42,7 +42,7 @@ var View = function(config, world) {
 
 	$("#game-wrapper").css("width", this.width + 10);
 	$("#game-wrapper").css("height", this.height + 10);
-},
+};
 
 
 /**

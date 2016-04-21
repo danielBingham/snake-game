@@ -46,11 +46,11 @@ var Command = function(game) {
 
 	// Register a click listener to start a new game if the 
 	// last one ended.
-	$("#snake").click(function(event) {
+	$("#snake").click(_.bind(function(event) {
 		if (this.game.game_over) {
 			this.game.reinit();
 		}
-	});
+	}, this));
 };
 
 /**

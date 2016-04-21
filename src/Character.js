@@ -88,7 +88,7 @@ var Character = function (world) {
  *
  * Prototype of the Character class.
  */
-Snake.Character.prototype = {
+Character.prototype = {
 
 	/**
 	 * A generalized method to set the direction of one of the

@@ -43,6 +43,7 @@ Animator.prototype = {
 	 * Initialize the game's animation and set the game to running.
 	 */
 	start: function(game) {
+
 		// Set up the game loop.
 		var gameLoop = function(animator) {
 

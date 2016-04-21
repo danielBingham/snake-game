@@ -128,11 +128,11 @@ Game.prototype = {
 		this.view = new View(this.config, this.world);
 
 		this.draw = new Draw($("#snake")[0], this.view.width, this.view.height);
-		this.command = new Command();
+		this.command = new Command(this);
 		$("#snake").focus();
 
 		this.animator = new Animator(this.config);
-		this.animator.start();
+		this.animator.start(this);
 	},
 
 	/**
@@ -151,14 +151,14 @@ Game.prototype = {
 	update: function() {
 		this.tick++;
 		if (this.tick == this.game_speed) {
-			var ate_block = this.character.move(this.world, this.game);		
+			var ate_block = this.character.move(this.world, this);		
 			if (ate_block) {
 				this.world.generateBlock(this.character);
 				this.score++;
 			}
 		
 			this.command.previous_direction = this.character.getHeadDirection();	
-			this.view.render(this.world);
+			this.view.render(this.world, this.draw);
 			this.view.updateScore(this.score);
 			
 			this.tick = 0;
